@@ -95,13 +95,6 @@ export default function Home() {
         {/* ——— Hero ——— */}
         <section className="grid min-h-[94svh] items-center gap-14 pb-16 pt-28 sm:pt-32 lg:grid-cols-[1fr_380px] lg:gap-16">
           <div>
-            <div
-              className="rise mb-9 inline-flex w-fit items-center gap-2.5 rounded-full border border-line bg-surface/60 py-1.5 pl-3 pr-4 text-[12.5px] text-muted"
-              style={{ "--delay": "0ms" } as React.CSSProperties}
-            >
-              <span className="status-dot h-[7px] w-[7px] rounded-full bg-[#22a05e]" />
-              {profile.status}
-            </div>
 
             <h1 className="max-w-[640px] font-serif text-[clamp(2.5rem,5.4vw,4.35rem)] font-normal leading-[1.04] tracking-[-0.02em]">
               {intro.headline.map((line, i) => (
