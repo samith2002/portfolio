@@ -17,9 +17,10 @@ npm run dev      # http://localhost:3000
 npm run build    # production build check
 ```
 
-## Deploy to Vercel
-1. Push this folder to a GitHub repo.
-2. On vercel.com, choose **Add New → Project** and import the repo. Leave every default as is.
-3. After the first deploy, set `profile.siteUrl` in `src/content.ts` to your real domain so social previews resolve correctly.
+## Deploy
+The Vercel project `samith-portfolio` is connected to this repo:
 
-Or from the terminal: `npx vercel` (preview) / `npx vercel --prod`.
+- **Push to `main`** and the site deploys to production at https://samithsiddo.com.
+- **Push any other branch** to get a preview URL.
+
+Manual deploy from this folder, if needed: `npx vercel deploy --prod`.
