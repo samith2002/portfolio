@@ -1,0 +1,455 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root {
+  --bg: #f6f5f1;
+  --surface: #fdfcf9;
+  --fg: #16161a;
+  --muted: #5f5e5a;
+  --faint: #6e6d68;
+  --line: #e3e1da;
+  --accent: #2346d8;
+  --accent-soft: rgba(35, 70, 216, 0.08);
+  --selection: rgba(35, 70, 216, 0.16);
+  --ok: #187444;
+  --bad: #b23f35;
+  --warn: #8a6414;
+}
+
+[data-theme="dark"] {
+  --bg: #0c0d0f;
+  --surface: #131417;
+  --fg: #ecebe7;
+  --muted: #a3a19c;
+  --faint: #85847f;
+  --line: #222328;
+  --accent: #7f9dff;
+  --accent-soft: rgba(127, 157, 255, 0.1);
+  --selection: rgba(127, 157, 255, 0.24);
+  --ok: #3fbf7a;
+  --bad: #ef7a6e;
+  --warn: #d9ad4f;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-ok: var(--ok);
+  --color-bad: var(--bad);
+  --color-warn: var(--warn);
+  --font-sans: var(--font-sans-face), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-serif-display), ui-serif, Georgia, serif;
+  --font-mono: var(--font-mono-face), ui-monospace, SFMono-Regular, monospace;
+}
+
+html {
+  background: var(--bg);
+  color: var(--fg);
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--selection);
+}
+
+/* Faint paper grain, gives the flat background some tooth */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+[data-theme="dark"] body::before {
+  opacity: 0.05;
+}
+
+/* Underline that draws in from the left */
+.link {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.25s ease, color 0.2s;
+}
+.link:hover,
+.link:focus-visible {
+  text-decoration-color: currentColor;
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--delay, 0ms);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Hero line-by-line entrance */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.35em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise {
+  animation: rise 1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+@keyframes pulse-dot {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 160, 94, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 7px rgba(34, 160, 94, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 160, 94, 0);
+  }
+}
+.status-dot {
+  animation: pulse-dot 2.4s ease-out infinite;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal,
+  .rise {
+    opacity: 1;
+    transform: none;
+    animation: none;
+    transition: none;
+  }
+  .status-dot {
+    animation: none;
+  }
+}
+
+/* MediCall waveform */
+@keyframes wave {
+  0%,
+  100% {
+    transform: scaleY(0.45);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+.wave-bar {
+  transform-origin: center;
+  animation: wave 1.3s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wave-bar {
+    animation: none;
+  }
+}
+
+/* ————— Illustration motion kit (shared by project covers and blog figures) ————— */
+
+/* Dashed SVG line that flows along its path: add stroke-dasharray e.g. "4 6" */
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -40;
+  }
+}
+.flow {
+  animation: dash-flow 1.6s linear infinite;
+}
+.flow-slow {
+  animation: dash-flow 3.2s linear infinite;
+}
+
+/* A dot that travels along a CSS offset-path. Set style={{ offsetPath: "path('M…')" }} */
+@keyframes travel {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+.travel {
+  offset-rotate: 0deg;
+  animation: travel var(--dur, 2.8s) cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  animation-delay: var(--delay, 0ms);
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.breathe {
+  animation: breathe 2.6s ease-in-out infinite;
+  animation-delay: var(--delay, 0ms);
+}
+
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+.float {
+  animation: float-y 5s ease-in-out infinite;
+  animation-delay: var(--delay, 0ms);
+}
+
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+.caret {
+  animation: caret 1s steps(1) infinite;
+}
+
+/* Scanning highlight bar */
+@keyframes scan {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(400%);
+  }
+}
+.scan {
+  animation: scan 3.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+/* Items that appear one after another in a loop; set --i on each */
+@keyframes step-in {
+  0%,
+  8% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  16%,
+  86% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.step-in {
+  animation: step-in var(--cycle, 7s) ease-out infinite;
+  animation-delay: calc(var(--i, 0) * var(--gap, 0.6s));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow,
+  .flow-slow,
+  .travel,
+  .breathe,
+  .float,
+  .caret,
+  .scan,
+  .step-in {
+    animation: none !important;
+  }
+  .travel {
+    display: none;
+  }
+}
+
+/* Dotted canvas behind illustrations */
+.canvas-dots {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Ccircle cx='1' cy='1' r='1' fill='%23d9d6cd'/%3E%3C/svg%3E");
+  background-size: 16px 16px;
+}
+[data-theme="dark"] .canvas-dots {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Ccircle cx='1' cy='1' r='1' fill='%2326272c'/%3E%3C/svg%3E");
+}
+
+/* ————— Long-form article typography ————— */
+.prose-post {
+  max-width: 68ch;
+  font-size: 17px;
+  line-height: 1.78;
+  color: var(--fg);
+}
+.prose-post > * + * {
+  margin-top: 1.35em;
+}
+.prose-post p {
+  color: color-mix(in oklab, var(--fg) 86%, var(--bg));
+}
+.prose-post h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.75rem, 3.4vw, 2.2rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  margin-top: 2.6em;
+  scroll-margin-top: 6rem;
+}
+.prose-post h3 {
+  font-size: 1.08rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 2em;
+}
+.prose-post h2 + *,
+.prose-post h3 + * {
+  margin-top: 0.8em;
+}
+.prose-post a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.prose-post strong {
+  font-weight: 600;
+  color: var(--fg);
+}
+.prose-post em {
+  font-style: italic;
+}
+.prose-post ul,
+.prose-post ol {
+  padding-left: 1.3em;
+}
+.prose-post ul {
+  list-style: none;
+  padding-left: 0;
+}
+.prose-post ul > li {
+  position: relative;
+  padding-left: 1.4em;
+}
+.prose-post ul > li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.9em;
+  width: 0.7em;
+  height: 1px;
+  background: var(--faint);
+}
+.prose-post ol {
+  list-style: decimal;
+}
+.prose-post ol > li::marker {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+}
+.prose-post li + li {
+  margin-top: 0.5em;
+}
+.prose-post :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  padding: 0.12em 0.38em;
+  border-radius: 5px;
+  background: var(--accent-soft);
+  color: var(--fg);
+}
+.prose-post blockquote {
+  border-left: 2px solid var(--accent);
+  padding-left: 1.2em;
+  font-family: var(--font-serif);
+  font-size: 1.35em;
+  line-height: 1.4;
+  font-style: italic;
+  color: var(--fg);
+}
+.prose-post hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 3em 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-dot {
+    display: none;
+  }
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Figures, callouts and code inside articles opt out of prose list styling */
+.prose-post .not-prose ul,
+.prose-post .not-prose ol {
+  padding-left: 0;
+  list-style: none;
+}
+.prose-post .not-prose ul > li,
+.prose-post .not-prose ol > li {
+  padding-left: 0;
+}
+.prose-post .not-prose ul > li::before {
+  content: none;
+}
+.prose-post .not-prose li + li {
+  margin-top: 0;
+}
+
+/* Signal travelling along the "How I work" track */
+@keyframes approach-signal {
+  from {
+    left: -6rem;
+  }
+  to {
+    left: 100%;
+  }
+}
+.approach-signal {
+  animation: approach-signal 5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .approach-signal {
+    display: none;
+  }
+}
